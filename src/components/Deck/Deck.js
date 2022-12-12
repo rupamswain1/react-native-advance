@@ -4,12 +4,22 @@ import {
   StyleSheet,
   Animated,
   PanResponder,
+  Image,
   Dimensions,
 } from 'react-native';
+import {Card,Button} from 'react-native-elements'
 
-import React, { useState } from 'react';
-const Deck = ({ data, renderCard, onSwipeRight, onSwipeLeft }) => {
+import React, { useState,useEffect,memo } from 'react';
+const Deck = ({ data, onSwipeRight, onSwipeLeft }) => {
+
   const [swipableCard,setSwipableCard]=useState(0);
+  console.log('***',swipableCard)
+  useEffect(()=>{
+    console.log('**update**')
+    return ()=>{
+      console.log('reset**')
+    }
+  },[])
   const SCREEN_WIDTH = Dimensions.get('window').width;
   const SWIPE_THRESHOLD=0.25*SCREEN_WIDTH;
   const position = React.useRef(new Animated.ValueXY()).current;
@@ -43,8 +53,13 @@ const Deck = ({ data, renderCard, onSwipeRight, onSwipeLeft }) => {
   }
 
   const onSwipeComplete=(direction)=>{
+    console.log('swipable card before swap',swipableCard)
     const item=data[swipableCard]
-    direction==='right'?onSwipeRight():onSwipeLeft();
+    direction==='right'?onSwipeRight?onSwipeRight():()=>{}:onSwipeLeft?onSwipeLeft():()=>{};
+    position.setValue({x:0,y:0});
+    const update=swipableCard+1
+   
+    setSwipableCard(prevValue=>prevValue+1)
   }
 
   const resetCardPosition = () => {
@@ -62,23 +77,44 @@ const Deck = ({ data, renderCard, onSwipeRight, onSwipeLeft }) => {
       transform: [{ rotate }],
     };
   };
+  const CardComponent=(item)=>{
+    return(
+     <Card
+     >
+      <Card.Title>{item.text}</Card.Title>
+      <Card.Divider/>
+      <Image source={{uri:item.uri}} style={{width: 350, height: 200}}/>
+      <Text style={{marginBottom:10}}>
+        This is a customizable card
+      </Text>
+      <Button
+        icon={{name:'code'}}
+        backgroundColor="#03A9F4"
+        title="View Now!"
+      />
+     
+     </Card>
+    )
+  }
   const renderCards = () => {
     return data.map((item, index) => {
-      return index == 0 ? (
+      if (index<swipableCard){ return null };
+      console.log(swipableCard)
+      return index === swipableCard ? (
         <Animated.View
           key={index}
           style={getCartdStyle()}
           {...panResponder.panHandlers}
         >
-          {renderCard(item)}
+          {CardComponent(item)}
         </Animated.View>
       ) : (
-        <>{renderCard(item)}</>
+        <>{CardComponent(item)}</>
       );
     });
   };
 
-  return <View>{renderCards()}</View>;
+  return( <View>{renderCards()}</View>);
 };
 
-export default Deck;
+export default memo(Deck);
