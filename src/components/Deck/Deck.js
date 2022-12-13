@@ -13,13 +13,7 @@ import React, { useState,useEffect,memo } from 'react';
 const Deck = ({ data, onSwipeRight, onSwipeLeft }) => {
 
   const [swipableCard,setSwipableCard]=useState(0);
-  console.log('***',swipableCard)
-  useEffect(()=>{
-    console.log('**update**')
-    return ()=>{
-      console.log('reset**')
-    }
-  },[])
+ 
   const SCREEN_WIDTH = Dimensions.get('window').width;
   const SWIPE_THRESHOLD=0.25*SCREEN_WIDTH;
   const position = React.useRef(new Animated.ValueXY()).current;
@@ -53,13 +47,11 @@ const Deck = ({ data, onSwipeRight, onSwipeLeft }) => {
   }
 
   const onSwipeComplete=(direction)=>{
-    console.log('swipable card before swap',swipableCard)
     const item=data[swipableCard]
     direction==='right'?onSwipeRight?onSwipeRight():()=>{}:onSwipeLeft?onSwipeLeft():()=>{};
     position.setValue({x:0,y:0});
-    const update=swipableCard+1
-   
     setSwipableCard(prevValue=>prevValue+1)
+    console.log('swipable',swipableCard)
   }
 
   const resetCardPosition = () => {
@@ -96,25 +88,45 @@ const Deck = ({ data, onSwipeRight, onSwipeLeft }) => {
      </Card>
     )
   }
+  const noMoreCard=()=>{
+   
+    return <Card>
+      <Card.Title>OOPs!! You have run out of cards</Card.Title>
+      <Card.Divider/>
+      <Text>There are no cards available on your deck, click on below button to load more cards</Text>
+      <Button
+        backgroundColor="#03A9F4"
+        title="Load More"
+      />
+    </Card>
+  }
   const renderCards = () => {
+    if(swipableCard>=data.length){return noMoreCard()}
     return data.map((item, index) => {
+      
       if (index<swipableCard){ return null };
       console.log(swipableCard)
       return index === swipableCard ? (
         <Animated.View
           key={index}
-          style={getCartdStyle()}
+          style={[getCartdStyle(),styles.deckStyle]}
           {...panResponder.panHandlers}
         >
           {CardComponent(item)}
         </Animated.View>
       ) : (
-        <>{CardComponent(item)}</>
+        <View style={styles.deckStyle}>{CardComponent(item)}</View>
       );
-    });
+    }).reverse();
   };
 
-  return( <View>{renderCards()}</View>);
+  return( <Animated.View>{renderCards()}</Animated.View>);
 };
+
+const styles=StyleSheet.create({
+  deckStyle:{
+    position:'absolute'
+  }
+})
 
 export default memo(Deck);
