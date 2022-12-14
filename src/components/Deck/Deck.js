@@ -6,10 +6,16 @@ import {
   PanResponder,
   Image,
   Dimensions,
+  LayoutAnimation,
+  UIManager
 } from 'react-native';
 import {Card,Button} from 'react-native-elements'
 
 import React, { useState,useEffect,memo } from 'react';
+
+UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
+
+
 const Deck = ({ data, onSwipeRight, onSwipeLeft }) => {
 
   const [swipableCard,setSwipableCard]=useState(0);
@@ -48,10 +54,11 @@ const Deck = ({ data, onSwipeRight, onSwipeLeft }) => {
 
   const onSwipeComplete=(direction)=>{
     const item=data[swipableCard]
+    LayoutAnimation.spring()
     direction==='right'?onSwipeRight?onSwipeRight():()=>{}:onSwipeLeft?onSwipeLeft():()=>{};
     position.setValue({x:0,y:0});
     setSwipableCard(prevValue=>prevValue+1)
-    console.log('swipable',swipableCard)
+  
   }
 
   const resetCardPosition = () => {
@@ -105,7 +112,7 @@ const Deck = ({ data, onSwipeRight, onSwipeLeft }) => {
     return data.map((item, index) => {
       
       if (index<swipableCard){ return null };
-      console.log(swipableCard)
+
       return index === swipableCard ? (
         <Animated.View
           key={index}
@@ -115,17 +122,24 @@ const Deck = ({ data, onSwipeRight, onSwipeLeft }) => {
           {CardComponent(item)}
         </Animated.View>
       ) : (
-        <View style={styles.deckStyle}>{CardComponent(item)}</View>
+        <Animated.View 
+          style={[styles.deckStyle,{top:10 * (index-swipableCard)}]}
+          key={index}
+        >
+          {CardComponent(item)}
+        </Animated.View>
       );
     }).reverse();
   };
 
-  return( <Animated.View>{renderCards()}</Animated.View>);
+  return( <View>{renderCards()}</View>);
 };
 
 const styles=StyleSheet.create({
   deckStyle:{
-    position:'absolute'
+    position:'absolute',
+    borderWidth:1,
+    borderColor:'black'
   }
 })
 
