@@ -1,4 +1,4 @@
-node_modules/
+react-native-animation/node_modules/
 .expo/
 dist/
 npm-debug.*
