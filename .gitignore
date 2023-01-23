@@ -1,5 +1,8 @@
 react-native-animation/node_modules/
 react-native-auth/server/node_modules
+react-native-auth/auth-app/node_modules
+job-map/node_modules 
+react-native-auth/server/.env
 .expo/
 dist/
 npm-debug.*
