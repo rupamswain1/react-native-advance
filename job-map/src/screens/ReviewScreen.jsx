@@ -9,8 +9,8 @@ const ReviewScreen = ({ navigation }) => {
             headerRight: ({ navigate }) => {
                 return <Button title="Settings"
                     onPress={() => navigation.navigate("Setting")}
-                    buttonStyle={{ color: "rgba(0,0,0,0)" }}
-
+                    containerStyle={{ backgroundColor: "#fff" }}
+                    style={{ backgroundColor: "#fff" }}
                     color="rgba(0,122,255,1"
                 />
             },
