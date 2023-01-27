@@ -10,6 +10,9 @@ import MapScreen from './src/screens/MapScreen';
 import DeckScreen from './src/screens/DeckScreen';
 import ReviewScreen from './src/screens/ReviewScreen';
 import SettingScreen from './src/screens/SettingScreen';
+
+import { Provider } from 'react-redux';
+import store from './src/redux/store';
 const Tab = createBottomTabNavigator();
 // const MainTab=createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -45,7 +48,8 @@ const MainTabConponent=()=>{
 export default function App() {
   
   return (
-    <View style={styles.container}>
+    <Provider store={store}>
+          <View style={styles.container}>
       <NavigationContainer>
       <Tab.Navigator >
         <Tab.Screen name="welcome" component={Welcome} 
@@ -58,6 +62,8 @@ export default function App() {
       </Tab.Navigator>
     </NavigationContainer>
     </View>
+    </Provider>
+
   );
 }
 
