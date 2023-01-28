@@ -1,22 +1,27 @@
 import { createSlice,createAsyncThunk } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import * as Facebook from 'expo-facebook';
 const INITITAL_STATE={
     token:null,
     isAuthorized:false
 }
 
-const authUser=createAsyncThunk(
+export const authUser=createAsyncThunk(
     'auth/loginUser',
     async(args,thunkAPI)=>{
+     
         const token=JSON.parse(await AsyncStorage.getItem("login_token"))
         if(token){
             return {token,isAuthorized:true}
         }
         else{
             try {
-                const { type, token, expirationDate, permissions, declinedPermissions } =
-                  await Facebook.logInWithReadPermissionsAsync({
+             console.log(Facebook.initializeAsync)
+            console.log(await Facebook.initializeAsync({
+                appId: '515034087364254'
+              }));
+              
+                const { type, token} =await Facebook.logInWithReadPermissionsAsync({
                     permissions: ['public_profile'],
                   });
                 if (type === 'success') {
@@ -28,8 +33,9 @@ const authUser=createAsyncThunk(
                   // type === 'cancel'
                   throw new Error('login failed')
                 }
-              } catch ({ message }) {
-                    return new Error({message})
+              } catch (err) {
+                console.log('error message',err)
+                    return new Error(err.message)
               }
             
         }
@@ -43,7 +49,8 @@ const authReducer = createSlice({
   
   },
   extraReducers:(builder)=>{
-    builder.addCase(authUser.fullfilled,(state,action)=>{
+    builder.addCase(authUser.fulfilled,(state,action)=>{
+        console.log('condition is fulfilled',action)
         state.token=action.payload.token;
         state.isAuthorized=action.payload.isAuthorized;
     });
