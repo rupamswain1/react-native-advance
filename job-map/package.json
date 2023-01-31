@@ -17,6 +17,8 @@
     "axios": "^1.2.6",
     "expo": "~47.0.12",
     "expo-facebook": "^12.2.0",
+    "expo-location": "^15.0.1",
+    "expo-permissions": "^14.0.0",
     "expo-status-bar": "~1.4.2",
     "latlng-to-zip": "^0.0.2",
     "qs": "^6.11.0",

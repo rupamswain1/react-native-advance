@@ -62,5 +62,4 @@ const authReducer = createSlice({
   }
 })
 
-export const { increment, decrement } = authReducer.actions
 export default authReducer.reducer

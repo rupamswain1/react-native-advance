@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
-
+import { Button } from 'react-native-elements';
+import { useDispatch } from 'react-redux';
 import MapView from 'react-native-maps';
-
+import { searchJobs } from '../redux/reducer/jobReducer';
 const MapScreen = () => {
     const [region, setRegion] = useState({
         longitude: -122,
@@ -13,7 +14,8 @@ const MapScreen = () => {
     const [mapLoaded, setMapLoaded] = useState(false)
     useEffect(() => {
         setMapLoaded(true)
-    }, [])
+    }, []);
+    const dispatch = useDispatch();
     const updateRegion = (location) => {
         console.log(location)
         setRegion(location)
@@ -23,10 +25,16 @@ const MapScreen = () => {
             <Text>Map Screen</Text>
             {
                 mapLoaded ?
-                    <MapView style={styles.mapStyle}
-                        region={region}
-                        onRegionChangeComplete={updateRegion}
-                    />
+                    <>
+                        <MapView style={styles.mapStyle}
+                            region={region}
+                            onRegionChangeComplete={updateRegion}
+                        />
+                        <Button
+                            title="Set Search Location"
+                            onPress={() => dispatch(searchJobs(region))}
+                        />
+                    </>
                     :
 
                     <ActivityIndicator size="large" />
