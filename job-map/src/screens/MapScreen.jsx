@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { Button } from 'react-native-elements';
-import { useDispatch } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
 import MapView from 'react-native-maps';
-import { searchJobs } from '../redux/reducer/jobReducer';
-const MapScreen = () => {
+import { searchJobs,clearJobs } from '../redux/reducer/jobReducer';
+const MapScreen = ({navigation}) => {
     const [region, setRegion] = useState({
         longitude: -122,
         latitude: 37,
@@ -13,11 +13,13 @@ const MapScreen = () => {
     })
     const [mapLoaded, setMapLoaded] = useState(false)
     useEffect(() => {
+        // dispatch(clearJobs());
         setMapLoaded(true)
     }, []);
     const dispatch = useDispatch();
+    const {jobs}=useSelector((state)=>state.jobReducer)
+   console.log(jobs);
     const updateRegion = (location) => {
-        console.log(location)
         setRegion(location)
     }
     return (
@@ -39,7 +41,7 @@ const MapScreen = () => {
 
                     <ActivityIndicator size="large" />
             }
-
+            {jobs.length>0?navigation.navigate("deck"):null}
         </View>
     )
 }
